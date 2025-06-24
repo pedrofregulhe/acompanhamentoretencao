@@ -17,11 +17,12 @@ DEFAULT_RETENTION_BANDS = [
 ]
 # --- FIM DOS VALORES DE CONFIGURAÇÃO PADRÃO ---
 
+# Caminhos relativos para os arquivos dentro do repositório
 CONFIG_FILE = "config.json"
+EXCEL_FILE_PATH = "Retenção - Macro.xlsx"
+
 MOTIVOS_A_DESCONSIDERAR_PADRAO = ["FALECIMENTO DO TITULAR", "AQUISIÇÃO DE BBLEND"]
 
-# Caminho fixo do arquivo Excel
-EXCEL_FILE_PATH = "C:\\Users\\pedroofs\\OneDrive - Grupo Algar\\Área de Trabalho\\Streamlit\\Retenção\\Retenção - Macro.xlsx"
 
 # Function to load configuration (adapted for Streamlit)
 def load_config():
@@ -189,10 +190,8 @@ def calcular_resumo_retencao(df_filtrado, retention_bands):
     denominador_faturamento_geral = total_retido_geral_abs + total_nao_retido_geral_ajustado
     if denominador_faturamento_geral > 0:
         percent_faturamento_geral_sum = (total_retido_geral_abs / denominador_faturamento_geral) * 100
-        conversao_faturamento_values.append(f"{percent_faturamento_geral_sum:.2f}%")
         consolidado_faturamento_percent = percent_faturamento_geral_sum
     else:
-        conversao_faturamento_values.append("0.00%")
         consolidado_faturamento_percent = 0.00
 
     consolidated_value_per_intent, consolidated_band_name = _get_value_for_conversion_rate(consolidado_faturamento_percent, retention_bands)
@@ -410,7 +409,7 @@ def main():
     try:
         if not os.path.exists(EXCEL_FILE_PATH):
             st.error(f"Erro: O arquivo não foi encontrado no caminho especificado: `{EXCEL_FILE_PATH}`")
-            st.info("Por favor, verifique se o arquivo existe e o caminho está correto.")
+            st.info("Por favor, verifique se o arquivo 'Retenção - Macro.xlsx' está na mesma pasta do script no repositório.")
             st.session_state.df_original = None
         else:
             df_original = pd.read_excel(EXCEL_FILE_PATH)
@@ -422,7 +421,7 @@ def main():
             st.markdown(f"**Última atualização:** {last_modified_datetime.strftime('%d/%m/%Y às %Hh%M')}")
 
     except Exception as e:
-        st.error(f"Erro ao carregar ou processar o arquivo do caminho fixo: {e}")
+        st.error(f"Erro ao carregar ou processar o arquivo: {e}")
         st.session_state.df_original = None
 
     if 'df_original' in st.session_state and st.session_state.df_original is not None:
