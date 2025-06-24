@@ -23,6 +23,11 @@ EXCEL_FILE_PATH = "Retenção - Macro.xlsx"
 
 MOTIVOS_A_DESCONSIDERAR_PADRAO = ["FALECIMENTO DO TITULAR", "AQUISIÇÃO DE BBLEND"]
 
+# Nomes dos meses em português
+MESES_PORTUGUES = [
+    "janeiro", "fevereiro", "março", "abril", "maio", "junho",
+    "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"
+]
 
 # Function to load configuration (adapted for Streamlit)
 def load_config():
@@ -156,9 +161,8 @@ def calcular_resumo_retencao(df_filtrado, retention_bands):
     denominador_conversao_geral = total_retido_geral_abs + total_nao_retido_geral_abs
     if denominador_conversao_geral > 0:
         percent_conversao_geral_sum = (total_retido_geral_abs / denominador_conversao_geral) * 100
-        conversao_ecohouse_diaria_values.append(f"{percent_conversao_geral_sum:.2f}%")
     else:
-        conversao_ecohouse_diaria_values.append("0.00%")
+        percent_conversao_geral_sum = 0.00
 
     nao_retido_a_desconsiderar_diario = {d: 0 for d in all_dates}
     if "Categoria2Motivo" in df_filtrado.columns:
@@ -189,8 +193,7 @@ def calcular_resumo_retencao(df_filtrado, retention_bands):
     total_nao_retido_geral_ajustado = max(0, total_nao_retido_geral_abs - sum(nao_retido_a_desconsiderar_diario.values()))
     denominador_faturamento_geral = total_retido_geral_abs + total_nao_retido_geral_ajustado
     if denominador_faturamento_geral > 0:
-        percent_faturamento_geral_sum = (total_retido_geral_abs / denominador_faturamento_geral) * 100
-        consolidado_faturamento_percent = percent_faturamento_geral_sum
+        consolidado_faturamento_percent = (total_retido_geral_abs / denominador_faturamento_geral) * 100
     else:
         consolidado_faturamento_percent = 0.00
 
@@ -415,10 +418,15 @@ def main():
             df_original = pd.read_excel(EXCEL_FILE_PATH)
             st.session_state.df_original = process_data(df_original.copy(), st.session_state.usuarios_oficiais, st.session_state.usuarios_backup, st.session_state.usuarios_staff)
             
-            # Obter e exibir a data de última atualização do arquivo
+            # Obter e exibir a data de última atualização do arquivo (apenas data no formato desejado)
             last_modified_timestamp = os.path.getmtime(EXCEL_FILE_PATH)
             last_modified_datetime = datetime.fromtimestamp(last_modified_timestamp)
-            st.markdown(f"**Última atualização:** {last_modified_datetime.strftime('%d/%m/%Y às %Hh%M')}")
+            
+            dia = last_modified_datetime.day
+            mes = MESES_PORTUGUES[last_modified_datetime.month - 1] # -1 pois a lista é base 0
+            ano = last_modified_datetime.year
+            
+            st.markdown(f"**Última atualização:** {dia} de {mes} de {ano}")
 
     except Exception as e:
         st.error(f"Erro ao carregar ou processar o arquivo: {e}")
