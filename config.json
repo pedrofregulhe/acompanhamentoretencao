@@ -1,0 +1,47 @@
+{
+    "usuarios_oficiais": [
+        "DEJESF5",
+        "EDUARM11",
+        "LEMESAM",
+        "MARTIE90",
+        "CHRISA13",
+        "SILVAJ49",
+        "AFONSS1",
+        "LARAQA",
+        "ALVESM30",
+        "VITORJ11"
+    ],
+    "usuarios_backup": [
+        "HENRIM12",
+        "BARBOC20",
+        "ROBERE16",
+        "CAROLA12",
+        "FERNAM40"
+    ],
+    "usuarios_staff": [
+        "OLIVEA34",
+        "SSILVA"
+    ],
+    "retention_bands": [
+        [
+            0.0,
+            0.55,
+            27.59
+        ],
+        [
+            0.5501,
+            0.59,
+            31.58
+        ],
+        [
+            0.5901,
+            0.65,
+            36.12
+        ],
+        [
+            0.6501,
+            1.0,
+            41.57
+        ]
+    ]
+}
