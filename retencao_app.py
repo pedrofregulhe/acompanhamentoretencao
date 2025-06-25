@@ -13,7 +13,7 @@ DEFAULT_RETENTION_BANDS = [
     (0.00, 0.55, 27.59),
     (0.5501, 0.59, 31.58),
     (0.5901, 0.65, 36.12),
-    (0.6501, 1.00, 42.00)
+    (0.6501, 1.00, 41,54)
 ]
 # --- FIM DOS VALORES DE CONFIGURAÇÃO PADRÃO ---
 
@@ -531,7 +531,7 @@ def main():
             st.dataframe(df_franquias_nao_retido, hide_index=True)
 
         st.markdown("---")
-        st.write("Criado por: Pedro Fregulhe")
+        st.write("Criado por: Pedro Otávio Fregulhe Siqueira")
 
         # Export functionality
         st.subheader("Exportar Análise Completa")
