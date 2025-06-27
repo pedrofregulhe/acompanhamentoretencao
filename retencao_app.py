@@ -360,6 +360,16 @@ def calcular_franquias_nao_retido(df_filtrado):
     df_franquias = pd.concat([franquias_contagem, total_row], ignore_index=True)
     return df_franquias
 
+# Helper function to convert image to base64 for embedding in HTML (for better alignment control)
+import base64
+def get_img_as_base64(file_path):
+    # Verifica se o arquivo existe antes de tentar abrir
+    if not os.path.exists(file_path):
+        st.error(f"Erro: Imagem '{file_path}' não encontrada. Verifique o caminho.")
+        return "" # Retorna string vazia para evitar erro no HTML
+    with open(file_path, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
 
 # Streamlit App
 def main():
@@ -373,33 +383,22 @@ def main():
         st.session_state.retention_bands = load_config()
 
     # Criar colunas para o título e a logo
+    # Ajuste as proporções das colunas se a logo estiver muito grande ou pequena em relação ao título
     col_title, col_logo = st.columns([0.7, 0.3]) # Proporção: 70% para o título, 30% para a logo
 
     with col_title:
         st.title("📊 Acompanhamento de Retenção")
 
     with col_logo:
-        # st.image() suporta alinhamento através de seu próprio parâmetro `output_format`
-        # ou, para um controle mais preciso, você pode usar um truque com st.markdown para centralizar/alinhar
-        # ou, mais simples, usar o recurso de colunas e um espaçador como `st.empty()` para empurrar.
-        # Para alinhar à direita dentro de uma coluna, o Streamlit não tem um parâmetro direto para st.image.
-        # Uma forma é usar markdown com HTML, mas st.image é mais robusto para a imagem em si.
-        # Por simplicidade, vamos usar o st.image e a largura da coluna tentará acomodá-lo,
-        # e o posicionamento lateral será dado pela coluna.
-        # Para forçar alinhamento à direita dentro da coluna, o truque é um pouco mais avançado,
-        # mas podemos tentar usar um espaço flexível ou um st.markdown com CSS.
-
-        # Alternativa para alinhar à direita (usando HTML, se precisar de alinhamento exato dentro da coluna):
+        # Usando HTML e CSS para posicionar a imagem à direita dentro da coluna
+        # O `justify-content: flex-end;` alinha o conteúdo (a imagem) ao final do contêiner flexbox.
         st.markdown(
             f'<div style="display: flex; justify-content: flex-end;"><img src="data:image/png;base64,{get_img_as_base64("logo.png")}" width="180"></div>',
             unsafe_allow_html=True
         )
-        # Se preferir a simplicidade de st.image e a logo ficará centralizada na coluna, use:
-        # st.image("logo.png", width=180) 
 
-
-    st.markdown("---") # Adicionando um divisor visual após a logo e o título.
-
+    # Removida a barra horizontal aqui
+    # st.markdown("---") # Removido: Este era o divisor que você queria remover
 
     # Sidebar for filters and configuration
     with st.sidebar:
@@ -503,7 +502,7 @@ def main():
             st.warning("Nenhum dado encontrado para os filtros selecionados. Ajuste os filtros de usuários ou verifique o arquivo de dados.")
             return
 
-        st.markdown("---")
+        st.markdown("---") # Esta barra permanece para separar a seção de dados da seção de KPIs
         # --- Seção de Indicadores de Performance ---
         st.header("Indicadores de Performance Retenção") # Título alterado
 
@@ -646,13 +645,6 @@ def main():
             st.success("Arquivo 'analise_retencao_completa.xlsx' gerado e pronto para download!")
     else:
         st.info("Por favor, verifique o caminho do arquivo Excel e os dados para iniciar a análise.")
-
-# Helper function to convert image to base64 for embedding in HTML (for better alignment control)
-import base64
-def get_img_as_base64(file_path):
-    with open(file_path, "rb") as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
 
 
 if __name__ == "__main__":
