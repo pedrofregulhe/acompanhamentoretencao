@@ -1,0 +1,7 @@
+# .streamlit/config.toml
+[theme]
+primaryColor="#FF4B4B"           # Um vermelho vibrante para botões, etc.
+backgroundColor="#F0F2F6"        # Fundo claro
+secondaryBackgroundColor="#FFFFFF" # Fundo para containers/widgets (branco para contraste)
+textColor="#262730"              # Cor do texto (quase preto)
+font="sans serif"                # Fonte padrão
