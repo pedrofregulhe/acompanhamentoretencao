@@ -360,7 +360,6 @@ def calcular_franquias_nao_retido(df_filtrado):
     df_franquias = pd.concat([franquias_contagem, total_row], ignore_index=True)
     return df_franquias
 
-# Removida a função get_business_days_in_month.
 
 # Streamlit App
 def main():
@@ -374,6 +373,13 @@ def main():
         st.session_state.retention_bands = load_config()
 
     st.title("📊 Acompanhamento de Retenção")
+
+    # --- Adicionando a logo da sua empresa aqui ---
+    # Certifique-se de que o arquivo 'logo.png' está na raiz do seu diretório (junto com este script)
+    # Ajuste a largura (width) conforme o tamanho que você deseja para a logo.
+    st.image("logo.png", width=180) 
+    st.markdown("---") # Adicionando um divisor visual após a logo e o título.
+
 
     # Sidebar for filters and configuration
     with st.sidebar:
@@ -489,8 +495,7 @@ def main():
 
         col_kpi1, col_kpi2, col_kpi3, col_kpi4, col_kpi5 = st.columns(5) # Voltando para 5 colunas
         with col_kpi1:
-            # Para colocar em negrito dentro do st.metric, usamos formatação de string (f-string)
-            # O St.metric não interpreta markdown (**), mas o valor geralmente já é visualmente destacado.
+            # Revertido para formatação padrão de st.metric, que já é visualmente destacada.
             st.metric(label="✅ Retidos", value=f"{total_retido_geral_abs}") 
         with col_kpi2:
             st.metric(label="❌ Não Retidos", value=f"{total_nao_retido_geral_abs}") 
@@ -507,8 +512,10 @@ def main():
         st.subheader("📅 Resumo Diário de Retenção")
         col_metric1, col_metric2 = st.columns(2)
         with col_metric1:
+            # Revertido para formatação padrão de st.metric
             st.metric("💰 Valor Fatura Estimado", f"R$ {valor_fatura:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")) 
         with col_metric2:
+            # Revertido para formatação padrão de st.metric
             st.metric("📊 Faixa de Faturamento", faixa_faturamento) 
         st.dataframe(df_resumo, hide_index=True, use_container_width=True)
 
