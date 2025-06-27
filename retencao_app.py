@@ -372,12 +372,32 @@ def main():
         st.session_state.usuarios_staff, \
         st.session_state.retention_bands = load_config()
 
-    st.title("📊 Acompanhamento de Retenção")
+    # Criar colunas para o título e a logo
+    col_title, col_logo = st.columns([0.7, 0.3]) # Proporção: 70% para o título, 30% para a logo
 
-    # --- Adicionando a logo da sua empresa aqui ---
-    # Certifique-se de que o arquivo 'logo.png' está na raiz do seu diretório (junto com este script)
-    # Ajuste a largura (width) conforme o tamanho que você deseja para a logo.
-    st.image("logo.png", width=180) 
+    with col_title:
+        st.title("📊 Acompanhamento de Retenção")
+
+    with col_logo:
+        # st.image() suporta alinhamento através de seu próprio parâmetro `output_format`
+        # ou, para um controle mais preciso, você pode usar um truque com st.markdown para centralizar/alinhar
+        # ou, mais simples, usar o recurso de colunas e um espaçador como `st.empty()` para empurrar.
+        # Para alinhar à direita dentro de uma coluna, o Streamlit não tem um parâmetro direto para st.image.
+        # Uma forma é usar markdown com HTML, mas st.image é mais robusto para a imagem em si.
+        # Por simplicidade, vamos usar o st.image e a largura da coluna tentará acomodá-lo,
+        # e o posicionamento lateral será dado pela coluna.
+        # Para forçar alinhamento à direita dentro da coluna, o truque é um pouco mais avançado,
+        # mas podemos tentar usar um espaço flexível ou um st.markdown com CSS.
+
+        # Alternativa para alinhar à direita (usando HTML, se precisar de alinhamento exato dentro da coluna):
+        st.markdown(
+            f'<div style="display: flex; justify-content: flex-end;"><img src="data:image/png;base64,{get_img_as_base64("logo.png")}" width="180"></div>',
+            unsafe_allow_html=True
+        )
+        # Se preferir a simplicidade de st.image e a logo ficará centralizada na coluna, use:
+        # st.image("logo.png", width=180) 
+
+
     st.markdown("---") # Adicionando um divisor visual após a logo e o título.
 
 
@@ -495,7 +515,6 @@ def main():
 
         col_kpi1, col_kpi2, col_kpi3, col_kpi4, col_kpi5 = st.columns(5) # Voltando para 5 colunas
         with col_kpi1:
-            # Revertido para formatação padrão de st.metric, que já é visualmente destacada.
             st.metric(label="✅ Retidos", value=f"{total_retido_geral_abs}") 
         with col_kpi2:
             st.metric(label="❌ Não Retidos", value=f"{total_nao_retido_geral_abs}") 
@@ -512,10 +531,8 @@ def main():
         st.subheader("📅 Resumo Diário de Retenção")
         col_metric1, col_metric2 = st.columns(2)
         with col_metric1:
-            # Revertido para formatação padrão de st.metric
             st.metric("💰 Valor Fatura Estimado", f"R$ {valor_fatura:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")) 
         with col_metric2:
-            # Revertido para formatação padrão de st.metric
             st.metric("📊 Faixa de Faturamento", faixa_faturamento) 
         st.dataframe(df_resumo, hide_index=True, use_container_width=True)
 
@@ -629,6 +646,13 @@ def main():
             st.success("Arquivo 'analise_retencao_completa.xlsx' gerado e pronto para download!")
     else:
         st.info("Por favor, verifique o caminho do arquivo Excel e os dados para iniciar a análise.")
+
+# Helper function to convert image to base64 for embedding in HTML (for better alignment control)
+import base64
+def get_img_as_base64(file_path):
+    with open(file_path, "rb") as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
 
 
 if __name__ == "__main__":
